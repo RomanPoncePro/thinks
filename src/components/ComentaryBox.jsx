@@ -144,6 +144,10 @@ export const ComentaryBox = () => {
 		});
 	};
 
+	const handleDelete = (comment) =>{
+		console.log(comment)
+	}
+
 	const validateAndSend = (value,handleAdd) => {
 		if (value === '') return;
 		handleAdd(value)
@@ -169,6 +173,7 @@ export const ComentaryBox = () => {
 							handleLike={handleLike}
 							handleShared={handleShared}
 							handleReplay={handleReplay}
+							handleDelete={handleDelete}
 							>
 							{comment.replay ? (
 				
