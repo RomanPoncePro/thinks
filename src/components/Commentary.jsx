@@ -20,6 +20,9 @@ export const Commentary = ({children,comment,handleLike,handleShared,handleRepla
       >
         shared: {shared ? "Si" : "No"}
       </button>
+      <button>
+        delete
+      </button>
       <button 
       type="button"
       onClick={() => {
