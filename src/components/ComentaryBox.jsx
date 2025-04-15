@@ -1,6 +1,5 @@
 // Importo el madafakinb reducer
 import { useReducer } from "react";
-import { useState } from "react";
 import { useFormState } from "./Hooks/useFormState";
 import { CommentaryPost } from "./CommentaryPost";
 import { Commentary } from "./Commentary";
@@ -57,6 +56,11 @@ const commentsReducer = (comments, action = {}) => {
 				comment.id === action.id ? { ...comment, update: action.update } : comment,
 			)
 		}
+		case "setUpdate": {
+			return comments.map((comment) =>
+				comment.id === action.id ? { ...comment, update: action.update } : comment,
+			)
+		}
 		case "like": {
 			return comments.map((comment) =>
 				comment.id === action.id ? { ...comment, like: action.like } : comment,
@@ -102,7 +106,6 @@ const commentsReducer = (comments, action = {}) => {
 /* Lista tareas */
 
 export const ComentaryBox = () => {
-	const [id, setId] = useState(2)
 	const [comments, dispatch] = useReducer(commentsReducer, initialComments);
 	const { formState, onInputChange, onSubmit } = useFormState({
 		paragraph: "",
@@ -164,7 +167,11 @@ export const ComentaryBox = () => {
 		})
 	};
 
-	const handleUpdate = (comment) => {
+	const setUpdateResponse = (target,comment) =>{
+		console.log({target,comment})
+	}	
+
+	const showUpdateForm = (comment) => {
 		console.log(comment)
 		dispatch({
 			type:'update',
@@ -198,9 +205,9 @@ export const ComentaryBox = () => {
 						handleShared={handleShared}
 						handleReplay={handleReplay}
 						handleDelete={handleDelete}
-						handleUpdate={handleUpdate}
+						showUpdateForm={showUpdateForm}
+						setUpdateResponse={setUpdateResponse}
 					>
-						{comment.update ? <p>Listo para el update</p>:''}
 						{comment.replay ? (
 							<CommentaryPost
 								onSubmit={onSubmit}
