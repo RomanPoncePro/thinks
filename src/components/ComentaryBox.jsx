@@ -15,6 +15,7 @@ const initialComments = [
 		like: false,
 		shared: true,
 		replay: false,
+		update:false,
 		currentResponse: "",
 		response: [],
 	},
@@ -24,6 +25,7 @@ const initialComments = [
 		like: true,
 		shared: false,
 		replay: false,
+		update:false,
 		currentResponse: "",
 		response: [],
 	},
@@ -49,6 +51,11 @@ const commentsReducer = (comments, action = {}) => {
 		}
 		case "delete": {
 			return comments.filter(comment => comment.id !== action.id)
+		}
+		case "update": {
+			return comments.map((comment) =>
+				comment.id === action.id ? { ...comment, update: action.update } : comment,
+			)
 		}
 		case "like": {
 			return comments.map((comment) =>
@@ -106,7 +113,6 @@ export const ComentaryBox = () => {
 
 	const handleAddComment = (paragraph) => {
 		const id = comments.at(-1).id + 1
-		console.log(id)
 		dispatch({
 			id: id,
 			type: "added",
@@ -158,6 +164,15 @@ export const ComentaryBox = () => {
 		})
 	};
 
+	const handleUpdate = (comment) => {
+		console.log(comment)
+		dispatch({
+			type:'update',
+			id: comment.id,
+			update: !comment.update 
+		})
+	}
+
 	const validateAndSend = (value, handleAdd) => {
 		if (value === "") return;
 		handleAdd(value);
@@ -183,7 +198,9 @@ export const ComentaryBox = () => {
 						handleShared={handleShared}
 						handleReplay={handleReplay}
 						handleDelete={handleDelete}
+						handleUpdate={handleUpdate}
 					>
+						{comment.update ? <p>Listo para el update</p>:''}
 						{comment.replay ? (
 							<CommentaryPost
 								onSubmit={onSubmit}

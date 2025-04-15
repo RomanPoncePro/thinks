@@ -1,4 +1,4 @@
-export const Commentary = ({children,comment,handleLike,handleShared,handleReplay,handleDelete}) => {
+export const Commentary = ({children,comment,handleLike,handleShared,handleReplay,handleDelete,handleUpdate}) => {
   const {paragraph, like,shared,replay, response} = comment
   return(
    <li>
@@ -27,6 +27,14 @@ export const Commentary = ({children,comment,handleLike,handleShared,handleRepla
         }}
       >
         delete
+      </button>
+      <button
+        type="button"
+        onClick={()=>{
+          handleUpdate(comment)
+        }}
+      >
+        Update
       </button>
       <button 
       type="button"
