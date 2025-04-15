@@ -1,5 +1,6 @@
 // Importo el madafakinb reducer
 import { useReducer } from "react";
+import { useState } from "react";
 import { useFormState } from "./Hooks/useFormState";
 import { CommentaryPost } from "./CommentaryPost";
 import { Commentary } from "./Commentary";
@@ -46,6 +47,9 @@ const commentsReducer = (comments, action = {}) => {
 				},
 			];
 		}
+		case "delete": {
+			return comments.filter(comment => comment.id !== action.id)
+		}
 		case "like": {
 			return comments.map((comment) =>
 				comment.id === action.id ? { ...comment, like: action.like } : comment,
@@ -91,17 +95,20 @@ const commentsReducer = (comments, action = {}) => {
 /* Lista tareas */
 
 export const ComentaryBox = () => {
+	const [id, setId] = useState(2)
 	const [comments, dispatch] = useReducer(commentsReducer, initialComments);
 	const { formState, onInputChange, onSubmit } = useFormState({
 		paragraph: "",
 		currentResponse: "",
 	});
 
-	const handleAddComment = (paragraph) => {
 
-		const nextId = comments.length + 1;
+
+	const handleAddComment = (paragraph) => {
+		const id = comments.at(-1).id + 1
+		console.log(id)
 		dispatch({
-			id: nextId,
+			id: id,
 			type: "added",
 			paragraph: paragraph,
 		});
@@ -144,65 +151,64 @@ export const ComentaryBox = () => {
 		});
 	};
 
-	const handleDelete = (comment) =>{
-		console.log(comment)
-	}
+	const handleDelete = (comment) => {
+		dispatch({
+			type:'delete',
+			id: comment.id 
+		})
+	};
 
-	const validateAndSend = (value,handleAdd) => {
-		if (value === '') return;
-		handleAdd(value)
-	}
-
+	const validateAndSend = (value, handleAdd) => {
+		if (value === "") return;
+		handleAdd(value);
+	};
 
 	return (
 		<>
 			<CommentaryPost
 				onSubmit={onSubmit}
 				value={formState.paragraph}
-				onClick={() => { 
-					validateAndSend(formState.paragraph,handleAddComment)
+				onClick={() => {
+					validateAndSend(formState.paragraph, handleAddComment);
 				}}
 				onChange={onInputChange}
 			/>
 
 			<ul>
 				{comments.map((comment) => (
-						<Commentary
-							key={comment.id}
-							comment={comment}
-							handleLike={handleLike}
-							handleShared={handleShared}
-							handleReplay={handleReplay}
-							handleDelete={handleDelete}
-							>
-							{comment.replay ? (
-				
-									<CommentaryPost
-										onSubmit={onSubmit}
-										value={comment.currentResponse}
-										onChange={({ target }) => {
-											dispatch({
-												id: comment.id,
-												type: "setCurrentResponse",
-												value: target.value,
-											});
-										}}
-										onClick={() => {
-											validateAndSend(comment,handleAddResponse)
-										}}
-									/>
-					
-							) : (
-								''
-							)}
-					
+					<Commentary
+						key={comment.id}
+						comment={comment}
+						handleLike={handleLike}
+						handleShared={handleShared}
+						handleReplay={handleReplay}
+						handleDelete={handleDelete}
+					>
+						{comment.replay ? (
+							<CommentaryPost
+								onSubmit={onSubmit}
+								value={comment.currentResponse}
+								onChange={({ target }) => {
+									dispatch({
+										id: comment.id,
+										type: "setCurrentResponse",
+										value: target.value,
+									});
+								}}
+								onClick={() => {
+									validateAndSend(comment, handleAddResponse);
+								}}
+							/>
+						) : (
+							""
+						)}
+
 						<ul>
 							{comment.response.map((res) => (
 								<li>{res}</li>
 							))}
 						</ul>
-					</Commentary>			
-			
+					</Commentary>
 				))}
 			</ul>
 		</>
